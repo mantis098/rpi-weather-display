@@ -1,0 +1,33 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: weather-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./docker/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
+  weather-display:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        VITE_MQTT_URL: ${VITE_MQTT_URL:-ws://localhost:9001}
+        VITE_MQTT_TOPIC: ${VITE_MQTT_TOPIC:-ecowitt/weather}
+        VITE_LATITUDE: ${VITE_LATITUDE:-51.05}
+        VITE_LONGITUDE: ${VITE_LONGITUDE:-13.74}
+        VITE_STATION_NAME: ${VITE_STATION_NAME:-Wetterstation WS90}
+    container_name: weather-display
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - mosquitto
+
+volumes:
+  mosquitto_data:
+  mosquitto_log:
