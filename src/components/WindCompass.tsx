@@ -73,7 +73,7 @@ export default function WindCompass({ direction, speed, gust, maxDailyGust }: Wi
                 {speed.toFixed(1)} km/h
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {getWindDirectionLabel(direction)} ({direction}\u00b0)
+                {getWindDirectionLabel(direction)} ({Math.round(direction)}{'\u00b0'})
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Boeen: {gust.toFixed(1)} km/h
